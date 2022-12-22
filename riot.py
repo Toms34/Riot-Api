@@ -1,3 +1,4 @@
+from types import NoneType
 import requests
 import time
 
@@ -50,7 +51,6 @@ class Riot:
             return
         time.sleep(self.rate_limit -(time.time()-self.last_request))
         self.requested()
-        return
         
     def get_summoner_by_name(self,pseudo):
         url_id=f"https://euw1.api.riotgames.com/lol/summoner/v4/summoners/by-name/{pseudo}"
@@ -68,7 +68,7 @@ class Riot:
             return "404"
         return data
 
-    def Fpuuid(self,pseudo)-> None:
+    def get_puuid(self,pseudo)-> None:
         #url to request summoner puuid (encrypted) just ad user name after
         url_id=f"https://euw1.api.riotgames.com/lol/summoner/v4/summoners/by-name/{pseudo}"
 
@@ -82,10 +82,10 @@ class Riot:
         #print(data.keys())
         #print(data)
         if resp.status_code == 404:
-            return "404"
+            return NoneType
         return data["puuid"]
 
-    def encryptedId(self,pseudo)-> str:
+    def get_encrypted_id(self,pseudo)-> str:
         #url to request summoner puuid (encrypted) just ad user name after
         url_id=f"https://euw1.api.riotgames.com/lol/summoner/v4/summoners/by-name/{pseudo}"
 
@@ -107,8 +107,8 @@ class Player:
     
         def __init__(self,riot,pseudo) -> None:
             self.riot=riot
-            self.encryptedId=riot.encryptedId(pseudo=pseudo)
-            self.puuid=riot.Fpuuid(pseudo=pseudo)
+            self.encryptedId=riot.get_encrypted_id(pseudo=pseudo)
+            self.puuid=riot.get_puuid(pseudo=pseudo)
             self.gameMode={
                 "aram":450,
                 "flex":440,
